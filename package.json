@@ -1,0 +1,32 @@
+{
+  "name": "money-transfer-app",
+  "version": "0.0.1",
+  "description": "A money transfer app",
+  "scripts": {
+    "start": "node src/start.js",
+    "test": "mocha ./test/*",
+    "db:migrate": "knex migrate:latest",
+    "db:seed": "knex seed:run"
+  },
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "express": "4.17.1",
+    "knex": "0.20.8",
+    "mocha": "^10.2.0",
+    "mysql": "^2.18.1",
+    "sinon": "^15.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.20",
+    "sinon": "^15.0.1"
+  }
+}
