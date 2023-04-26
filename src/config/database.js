@@ -5,5 +5,5 @@ const env = process.env.NODE_ENV || "development";
 const knexDb = knex(config[env]);
 
 module.exports = {
-knexDb
+    knexDb
 };

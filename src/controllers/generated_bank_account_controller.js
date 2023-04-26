@@ -1,0 +1,62 @@
+const Wallet = require("../models/wallet");
+const User = require("../models/user");
+const GeneratedBankAccount = require("../models/generated_bank_account");
+const APIController = require("./api_controller");
+const {
+  BAD_REQUEST,
+  UNAUTHORIZED,
+  CONFLICT
+} = require("../helpers/error_helper");
+const BaseController = require("./base_controller");
+const dotenv = require("dotenv");
+dotenv.config();
+const axios = require('axios');
+const token = process.env.RAVEN_LIVE_SECRET;
+const config = {
+  headers: { Authorization: `Bearer ${token}` }
+};
+
+
+class GeneratedBankAccountController extends BaseController {
+  
+  async createBankAccount(){
+    const userId = this.req.user
+    const user = await new User().findOne({id:userId});
+    try{
+      const postData = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        amount: '0',
+        email: user.email
+      }
+      const result = await new APIController().generateBankAccount(postData);
+      console.log(JSON.stringify(response.data));
+      console.log(`data is ${result}`);
+      if(result.data){
+        const data = result.status;
+        console.log(`data is ${data.data}`);
+        new GeneratedBankAccount().create(
+          {
+            user_id: userId,
+            bank: data.bank,
+            account_number: data.account_number,
+            account_name: data.account_name
+          }
+        )
+
+      }else{
+        this.errorResponse(GENERIC_ERROR,"");
+      }
+
+    }catch(err){
+      console.log("here")
+      this.errorResponse(BAD_REQUEST,err);
+    }
+  }
+
+}
+
+  
+module.exports = GeneratedBankAccountController;
+  
