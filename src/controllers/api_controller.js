@@ -20,6 +20,7 @@ class APIController extends BaseController {
     };
     try {
       const response = await axios.post('https://integrations.getravenbank.com/v1/pwbt/generate_account', props, config);
+      console.log(`data is ${response.data}`);
       return response.data;
     } catch (error) {
       console.error('API call error:', error);

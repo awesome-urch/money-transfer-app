@@ -31,12 +31,17 @@ class GeneratedBankAccountController extends BaseController {
         email: user.email
       }
       const result = await new APIController().generateBankAccount(postData);
-      console.log(JSON.stringify(response.data));
-      console.log(`data is ${result}`);
+      console.log(`data is ${result["status"]}`);
       if(result.data){
-        const data = result.status;
-        console.log(`data is ${data.data}`);
-        new GeneratedBankAccount().create(
+        const data = result.data;
+        console.log(`data is ${data.bank} user is ${userId}`);
+        const props = {
+          user_id: userId,
+          bank: data.bank,
+          account_number: data.account_number,
+          account_name: data.account_name
+        }
+        await new GeneratedBankAccount().create(
           {
             user_id: userId,
             bank: data.bank,
