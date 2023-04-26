@@ -16,12 +16,21 @@ const config = {
   headers: { Authorization: `Bearer ${token}` }
 };
 
-
 class GeneratedBankAccountController extends BaseController {
   
   async createBankAccount(){
     const userId = this.req.user
     const user = await new User().findOne({id:userId});
+    const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
+    
+    if(bankAccount){
+      this.res.json({
+        ok: true,
+        message: 'Bank account generated successfully',
+        data: bankAccount
+      });
+    }
+
     try{
       const postData = {
         first_name: user.first_name,
@@ -50,15 +59,31 @@ class GeneratedBankAccountController extends BaseController {
           }
         )
 
+        const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
+        this.res.json({
+          ok: true,
+          message: 'Bank account generated successfully',
+          data: bankAccount
+        });
+
       }else{
         this.errorResponse(GENERIC_ERROR,"");
       }
 
     }catch(err){
-      console.log("here")
       this.errorResponse(BAD_REQUEST,err);
     }
   }
+
+  async userHasbankAccount(){
+    const userId = this.req.user
+    const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
+    if(bankAccount){
+      return true;
+    }
+    return false;
+  }
+
 
 }
 
