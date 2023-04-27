@@ -28,13 +28,23 @@ class WalletController extends BaseController {
     const wallet = await new Wallet().findOne({ userId: userId });
     if(wallet) return this.errorResponse(CONFLICT,"User wallet already exists");
 
-    props.userId = userId
+    props.user_id = userId
 
-    const newWallet = await new Wallet().create(props);
-    const getWallet = await new Wallet().findOne({id:newWallet[0]});
+    // const newWallet = await new Wallet().create(props);
+    // const getWallet = await new Wallet().findOne({id:newWallet[0]});
+
+    const getWallet = await this.initUserWallet(props);
 
     return getWallet;
   }
+
+  async initUserWallet(props){
+    props.transaction_type = INITIAL_TRANSACTION_TYPE;
+    const newWallet = await new Wallet().create(props);
+    const getWallet = await new Wallet().findOne({id:newWallet[0]});
+    return getWallet;
+  }
+
 
 }
 

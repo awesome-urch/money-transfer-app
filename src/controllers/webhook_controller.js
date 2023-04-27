@@ -16,30 +16,30 @@ class WebhookController extends BaseController {
       const event = this.req.body;
       const type = event.type;
       if (event.secret !== process.env.RAVEN_WEBHOOK_SECRET) {
-        res.status(400).send(`Invalid secret key`);
+        return this.res.status(400).send(`Invalid secret key`);
       }
       if (type == COLLECTION) {
         //get user_id using account number param
         const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
         if (getBankAccount) {
           try {
-            await new TransactionController().creditUser({
+            await new TransactionController().credit({
               user_id: getBankAccount.user_id,
               amount: event.amount,
               transaction_reference: event.session_id
             })
-            res.status(200).end();
+            return  this.res.status(200).end();
           } catch (err) {
             console.error(err);
-            res.status(500).send('Internal server error');
+            return this.res.status(500).send('Internal server error');
           }
         } else {
-          res.status(400).send(`Invalid`);
+          return this.res.status(400).send(`Invalid`);
         }
       }
     } catch (err) {
       console.error(err);
-      res.status(500).send('Internal server error');
+      return this.res.status(500).send('Internal server error');
     }
   }
 

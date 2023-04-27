@@ -2,14 +2,7 @@ const Wallet = require("../models/wallet");
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
 const WalletController = require("./wallet_controller");
-import {
-  createError,
-  BAD_REQUEST,
-  UNAUTHORIZED,
-  CONFLICT,
-  UNPROCESSABLE
-} from "../helpers/error_helper";
-import BaseController from "./base_controller";
+const BaseController = require("./base_controller");
 
 class TransactionController extends BaseController {
 
@@ -32,7 +25,12 @@ class TransactionController extends BaseController {
       throw "Invalid user"
     }
 
-    const wallet = await new Wallet().findOne({ user_id: props.user_id });
+    let wallet = await new Wallet().findOne({ user_id: props.user_id });
+    if(!wallet){
+      wallet = new WalletController().initUserWallet({
+        user_id: props.user_id
+      });
+    }
 
     if(!props.transaction_reference){
       props.transaction_reference = this.generateReference();
@@ -42,6 +40,7 @@ class TransactionController extends BaseController {
       }
     }
 
+    console.log(`amt ${props.amount} wbal ${wallet.balance}`)
     let newBalance;
     if (props.transaction_type === "credit") {
       newBalance = parseFloat(wallet.balance) + parseFloat(props.amount);
@@ -53,6 +52,7 @@ class TransactionController extends BaseController {
 
       newBalance = parseFloat(wallet.balance) - parseFloat(props.amount);
     }
+    console.log(`newbal ${newBalance} `)
 
     props.balance = newBalance;
 
@@ -65,7 +65,7 @@ class TransactionController extends BaseController {
     console.log(newTransaction);
     console.log(new Transaction().selectableProps);
 
-    await new Wallet().update(wallet.id,{ balance: newBalance, transaction_type: transactionType});
+    await new Wallet().update(wallet.id,{ balance: newBalance, transaction_type: props.transaction_type});
 
     return getTransaction
 
@@ -83,5 +83,5 @@ class TransactionController extends BaseController {
 }
 
   
-export default TransactionController;
+module.exports = TransactionController;
   
