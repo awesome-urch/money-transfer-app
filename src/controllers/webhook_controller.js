@@ -49,6 +49,8 @@ class WebhookController extends BaseController {
       }
       if (type == TRANSFER) {
 
+        
+
         //get user_id using account number param
         const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
         if (getBankAccount) {

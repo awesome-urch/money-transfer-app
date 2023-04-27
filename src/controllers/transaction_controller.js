@@ -80,6 +80,14 @@ class TransactionController extends BaseController {
     props.transaction_type = "debit";
     return this.performTransaction(props);
   }
+
+  async getTransaction(props){
+    const transaction = await new Transaction().findOne({
+      reference: props.reference,
+    });
+    return transaction;
+  }
+
 }
 
   
