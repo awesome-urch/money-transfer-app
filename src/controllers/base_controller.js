@@ -1,7 +1,3 @@
-const User = require("../models/user");
-
-const { createError, UNAUTHORIZED } = require("../helpers/error_helper");
-
 class BaseController {
   constructor(req, res, next) {
     this.req = req;
@@ -31,19 +27,6 @@ class BaseController {
     return (Math.random() + 1).toString(36).substring(2);
   }
 
-  async checkUser() {
-    const user = await new User().findOne({ id: this.req.body.user_id });
-    if (!user) {
-      return this.next(
-        createError({
-          status: UNAUTHORIZED,
-          message: "Invalid user",
-        })
-      );
-    }
-
-    return user;
-  }
 }
 
 module.exports = BaseController;
