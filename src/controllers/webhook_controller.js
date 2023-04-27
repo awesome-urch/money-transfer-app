@@ -23,12 +23,13 @@ class WebhookController extends BaseController {
         if (getBankAccount) {
           try {
             //save source account
-            const sourceAccount = new BankAccountController().saveSourceAndDestination({
+            const sourceAccount = await new BankAccountController().saveSourceAndDestination({
               bank: event.source.bank,
               bank_code: event.source.bank_code,
               account_number: event.source.account_number,
               account_name: `${event.source.first_name} ${event.source.last_name}`
             });
+            console.log(`${sourceAccount}`);
             await new TransactionController().credit({
               user_id: getBankAccount.user_id,
               amount: event.amount,

@@ -2,8 +2,8 @@
 exports.up = function(knex) {
     return knex.schema.alterTable("transactions", (table) => {
         table.string("status");
-        table.string("source");
-        table.string("destination");
+        table.integer("source");
+        table.integer("destination");
       });
 };
 
@@ -17,8 +17,8 @@ exports.down = function(knex) {
         table.string("transaction_reference");
         table.text("reason");
         table.string("status");
-        table.string("source");
-        table.string("destination");
+        table.integer("source");
+        table.integer("destination");
         table.foreign("user_id").references("users.id");
       });
 };

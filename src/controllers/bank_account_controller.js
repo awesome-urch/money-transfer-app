@@ -6,7 +6,7 @@ class BankAccountController extends BaseController {
 
   async saveSourceAndDestination(props){
     const bankAccount = await new BankAccount().create(props);
-    const getBankAccount = await new Wallet().findOne({id:bankAccount[0]});
+    const getBankAccount = await new BankAccount().findOne({id:bankAccount[0]});
     return getBankAccount;
   }
 
