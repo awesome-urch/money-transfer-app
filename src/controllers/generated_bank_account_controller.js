@@ -49,7 +49,7 @@ class GeneratedBankAccountController extends BaseController {
           bank: data.bank,
           account_number: data.account_number,
           account_name: data.account_name
-        }
+        };
         await new GeneratedBankAccount().create(
           {
             user_id: userId,
@@ -57,7 +57,7 @@ class GeneratedBankAccountController extends BaseController {
             account_number: data.account_number,
             account_name: data.account_name
           }
-        )
+        );
 
         //create user wallet account
         await this.createWalletAccount();

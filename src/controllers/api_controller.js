@@ -35,7 +35,7 @@ class APIController extends BaseController {
     };
     try {
       const response = await axios.post(`${endpoint}/v1/transfers/create`, props, config);
-      console.log(`data is ${response.data}`);
+      console.log(`data is ${JSON.stringify(response.data)}`);
       return response.data;
     } catch (error) {
       console.error('API call error:', error);

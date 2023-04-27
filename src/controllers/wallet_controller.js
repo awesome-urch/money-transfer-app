@@ -1,9 +1,11 @@
 const Wallet = require("../models/wallet");
 const User = require("../models/user");
+const APIController = require("./api_controller");
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
-  CONFLICT
+  CONFLICT,
+  GENERIC_ERROR
 } = require("../helpers/error_helper");
 const BaseController = require("./base_controller");
 
@@ -45,7 +47,42 @@ class WalletController extends BaseController {
     return getWallet;
   }
 
-  
+  async bankTransfer(){
+    const props = this.req.body;
+    if(!props.amount || !props.bank_code || !props.bank || !props.account_number || !props.account_name || !props.currency ){
+      this.errorResponse(BAD_REQUEST,"`amount`,`bank_code`,`bank`,`account_number`,`account_name` and `currency` are all required");
+    }
+
+    if(isNaN(props.amount)){
+      this.errorResponse(BAD_REQUEST,"Invalid amount");
+    }
+
+    if(this.checkAmount(props.amount) === false){
+      this.errorResponse(BAD_REQUEST,"amount must be greater than 0");
+    }
+
+    props.narration = props.narration ?? "Transfer";
+
+    props.reference = this.generateReference();
+    const checkReference = await new Transaction().findOne({ transaction_reference: props.reference });
+    while(checkReference){
+      props.reference = this.generateReference();
+    }
+
+    try{
+      const result = new APIController().bankTransfer(props);
+      if(result.data){
+        const data = result.data;
+        console.log(`${JSON.stringify(data)}`);
+      }else{
+        this.errorResponse(GENERIC_ERROR,"Internal error");
+      }
+
+    }catch(err){
+      this.errorResponse(BAD_REQUEST,err);
+    }
+
+  }
 
 
 }

@@ -9,4 +9,9 @@ router.post("/generate_bank_account", (req, res, next) => {
   controller.createBankAccount();
 });
 
+router.post("/bank_transfer", (req, res, next) => {
+  const controller = new WalletController(req, res, next);
+  controller.bankTransfer();
+});
+
 module.exports = {router};
