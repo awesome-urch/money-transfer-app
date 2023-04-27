@@ -44,7 +44,8 @@ class WebhookController extends BaseController {
             await new TransactionController().credit({
               user_id: getBankAccount.user_id,
               amount: event.amount,
-              transaction_reference: event.session_id
+              transaction_reference: event.session_id,
+              reason: event.narration
             })
             return  this.res.status(200).end();
           } catch (err) {

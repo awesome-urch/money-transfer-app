@@ -10,6 +10,7 @@ const {
   GENERIC_ERROR
 } = require("../helpers/error_helper");
 const BaseController = require("./base_controller");
+const { parse } = require("dotenv");
 
 const INITIAL_TRANSACTION_TYPE = "initial";
 const RAVEN_FEE = 10;
@@ -79,17 +80,18 @@ class WalletController extends BaseController {
       if(result.data){
         const data = result.data;
         console.log(`${JSON.stringify(data)}`);
-        if(result.status == 'success'){          
+        if(result.status == 'success'){
+          const totalAmount = parseFloat(props.amount) + parseFloat(RAVEN_FEE);       
           //debit user
-          const newTransaction = await new TransactionController().debit({
+          const getTransaction = await new TransactionController().debit({
               user_id: userId,
-              amount: props.amount + RAVEN_FEE,
-              transaction_reference: data.trx_ref
+              amount: totalAmount,
+              transaction_reference: data.trx_ref,
+              reason: data.narration
           });
-          const getTransaction = await new Transaction().findOne({id:newTransaction[0]});
           this.res.json({
             ok: true,
-            message: `Transfer successful. NGN${props.amount + RAVEN_FEE} was debited from your account`,
+            message: `Transfer successful. NGN${totalAmount} was debited from your account`,
             data: getTransaction
           });
         }else{
