@@ -83,10 +83,15 @@ class TransactionController extends BaseController {
 
   async getTransaction(props){
     const transaction = await new Transaction().findOne({
-      reference: props.reference,
+      transaction_reference: props.transaction_reference,
     });
     return transaction;
   }
+
+  async updateTransaction(id, props){
+    await new Transaction().update(id,{status:props.status});
+  }
+
 
 }
 

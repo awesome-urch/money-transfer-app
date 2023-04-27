@@ -125,4 +125,5 @@ class WalletController extends BaseController {
 
   
 module.exports = WalletController;
+module.exports = { RAVEN_FEE };
   

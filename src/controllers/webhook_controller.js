@@ -2,6 +2,7 @@ const BaseController = require("./base_controller");
 const TransactionController = require("./transaction_controller");
 const BankAccountController = require("./bank_account_controller");
 const GeneratedBankAccount = require("../models/generated_bank_account");
+const { RAVEN_FEE } = require("./wallet_controller");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -49,26 +50,39 @@ class WebhookController extends BaseController {
       }
       if (type == TRANSFER) {
 
-        
-
-        //get user_id using account number param
-        const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
-        if (getBankAccount) {
-          try {
-            await new TransactionController().credit({
-              user_id: getBankAccount.user_id,
-              amount: event.amount,
-              transaction_reference: event.session_id,
-              reason: event.narration
-            })
-            return  this.res.status(200).end();
-          } catch (err) {
-            console.error(err);
-            return this.res.status(500).send('Internal server error');
-          }
-        } else {
-          return this.res.status(400).send(`Invalid`);
+        const transaction = new TransactionController().getTransaction({
+          transaction_reference: event.trx_ref
+        });
+        if(!transaction){
+          return this.res.status(400).send(`Invalid transaction reference`);
         }
+
+        if(transaction.status == "success"){
+          return this.res.status(200).end();
+        }
+
+        if(event.status = "successful"){
+          await new TransactionController().updateTransaction(transaction.id,{
+            status: "success"
+          });
+        }
+
+        if(event.status = "failed"){
+          await new TransactionController().updateTransaction(transaction.id,{
+            status: "failed"
+          });
+          //reverse the amount to user's account
+          const totalReversalAmount = parseFloat(event.amount) + parseFloat(RAVEN_FEE);
+          const transactionReference = new TransactionController().generateReference();
+          await new TransactionController().credit({
+            user_id: transaction.user_id,
+            amount: totalReversalAmount,
+            transaction_reference: transactionReference,
+            reason: `Reversal for transaction ref: ${event.trx_ref}`
+          })
+          return  this.res.status(200).end();
+        }
+        
       }
     } catch (err) {
       console.error(err);
