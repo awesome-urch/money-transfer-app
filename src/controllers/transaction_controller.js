@@ -52,7 +52,7 @@ class TransactionController extends BaseController {
 
       newBalance = parseFloat(wallet.balance) - parseFloat(props.amount);
     }
-    console.log(`newbal ${newBalance} `)
+    console.log(`newbal ${JSON.stringify(props)} `);
 
     props.balance = newBalance;
 

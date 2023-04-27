@@ -25,7 +25,8 @@ class WebhookController extends BaseController {
             await new TransactionController().credit({
               user_id: getBankAccount.user_id,
               amount: event.amount,
-              transaction_reference: event.session_id
+              transaction_reference: event.session_id,
+              reason: event.source.narration
             })
             return  this.res.status(200).end();
           } catch (err) {
@@ -37,6 +38,7 @@ class WebhookController extends BaseController {
         }
       }
       if (type == TRANSFER) {
+        
         //get user_id using account number param
         const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
         if (getBankAccount) {

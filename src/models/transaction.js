@@ -8,7 +8,7 @@ class TransactionModel extends BaseModel {
       "amount",
       "balance",
       "transaction_type",
-      "transaction_reference	",
+      "transaction_reference",
       "reason"
     ]);
   }
