@@ -45,6 +45,8 @@ class WalletController extends BaseController {
     return getWallet;
   }
 
+  
+
 
 }
 

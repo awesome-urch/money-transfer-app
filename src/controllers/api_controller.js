@@ -29,6 +29,20 @@ class APIController extends BaseController {
     }
   }
 
+  async bankTransfer(props) {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    try {
+      const response = await axios.post(`${endpoint}/v1/transfers/create`, props, config);
+      console.log(`data is ${response.data}`);
+      return response.data;
+    } catch (error) {
+      console.error('API call error:', error);
+      throw "API call error occurred";
+    }
+  }
+
   async updateWebhookDetails() {
     const props = this.req.body
     const config = {
@@ -47,6 +61,8 @@ class APIController extends BaseController {
       this.errorResponse(GENERIC_ERROR,"");
     }
   }
+
+
 
 
 }

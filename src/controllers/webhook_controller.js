@@ -8,7 +8,6 @@ dotenv.config();
 const COLLECTION = "collection";
 const TRANSFER = "transfer";
 
-
 class WebhookController extends BaseController {
 
   async processPayload(){
@@ -19,6 +18,25 @@ class WebhookController extends BaseController {
         return this.res.status(400).send(`Invalid secret key`);
       }
       if (type == COLLECTION) {
+        //get user_id using account number param
+        const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
+        if (getBankAccount) {
+          try {
+            await new TransactionController().credit({
+              user_id: getBankAccount.user_id,
+              amount: event.amount,
+              transaction_reference: event.session_id
+            })
+            return  this.res.status(200).end();
+          } catch (err) {
+            console.error(err);
+            return this.res.status(500).send('Internal server error');
+          }
+        } else {
+          return this.res.status(400).send(`Invalid`);
+        }
+      }
+      if (type == TRANSFER) {
         //get user_id using account number param
         const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
         if (getBankAccount) {
