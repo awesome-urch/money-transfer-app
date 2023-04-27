@@ -76,6 +76,7 @@ class WebhookController extends BaseController {
             user_id: transaction.user_id,
             amount: totalReversalAmount,
             transaction_reference: transactionReference,
+            status: "success",
             reason: `Reversal for transaction ref: ${event.trx_ref}`
           })
           return  this.res.status(200).end();
