@@ -58,7 +58,7 @@ class TransactionController extends BaseController {
 
     const newTransaction = await new Transaction().create(props);
     if(!newTransaction){
-      throw "An error occurred"
+      throw "Internal error"
     }
     const getTransaction = await new Transaction().findOne({id:newTransaction[0]});
 
