@@ -21,7 +21,7 @@ const config = {
 class GeneratedBankAccountController extends BaseController {
   
   async createBankAccount(){
-    const userId = this.req.user
+    const userId = this.req.user;
     const user = await new User().findOne({id:userId});
     const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
     

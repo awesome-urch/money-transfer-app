@@ -30,6 +30,30 @@ class APIController extends BaseController {
   }
 
   async bankTransfer(props) {
+
+    const test = {
+      "status": "success",
+      "message": "transfer queued successfully",
+      "data": {
+        "email": "nnabugwu.michael@gmail.com",
+        "trx_ref": "202304271440GBIHFCE",
+        "merchant_ref": "REF001",
+        "amount": 1,
+        "bank": "Access Bank",
+        "bank_code": "044",
+        "account_number": "0727910558",
+        "account_name": "Nnabugwu Uchechukwu Michael",
+        "narration": "Sent from Raven",
+        "gateway": 1,
+        "fee": 10,
+        "status": "pending",
+        "created_at": "2023-04-27T13:40:27.386Z",
+        "id": 101176
+      }
+    }
+
+    return test;
+
     const config = {
       headers: { Authorization: `Bearer ${token}` }
     };

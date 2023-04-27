@@ -1,6 +1,8 @@
 const Wallet = require("../models/wallet");
 const User = require("../models/user");
 const APIController = require("./api_controller");
+const Transaction = require("../models/transaction");
+const TransactionController = require("./transaction_controller");
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
@@ -10,6 +12,7 @@ const {
 const BaseController = require("./base_controller");
 
 const INITIAL_TRANSACTION_TYPE = "initial";
+const RAVEN_FEE = 10;
 
 class WalletController extends BaseController {
 
@@ -50,15 +53,15 @@ class WalletController extends BaseController {
   async bankTransfer(){
     const props = this.req.body;
     if(!props.amount || !props.bank_code || !props.bank || !props.account_number || !props.account_name || !props.currency ){
-      this.errorResponse(BAD_REQUEST,"`amount`,`bank_code`,`bank`,`account_number`,`account_name` and `currency` are all required");
+      return this.errorResponse(BAD_REQUEST,"`amount`,`bank_code`,`bank`,`account_number`,`account_name` and `currency` are all required");
     }
 
     if(isNaN(props.amount)){
-      this.errorResponse(BAD_REQUEST,"Invalid amount");
+      return this.errorResponse(BAD_REQUEST,"Invalid amount");
     }
 
     if(this.checkAmount(props.amount) === false){
-      this.errorResponse(BAD_REQUEST,"amount must be greater than 0");
+      return this.errorResponse(BAD_REQUEST,"amount must be greater than 0");
     }
 
     props.narration = props.narration ?? "Transfer";
@@ -69,17 +72,35 @@ class WalletController extends BaseController {
       props.reference = this.generateReference();
     }
 
+    const userId = this.req.user;
+
     try{
-      const result = new APIController().bankTransfer(props);
+      const result = await new APIController().bankTransfer(props);
       if(result.data){
         const data = result.data;
         console.log(`${JSON.stringify(data)}`);
+        if(result.status == 'success'){          
+          //debit user
+          const newTransaction = await new TransactionController().debit({
+              user_id: userId,
+              amount: props.amount + RAVEN_FEE,
+              transaction_reference: data.trx_ref
+          });
+          const getTransaction = await new Transaction().findOne({id:newTransaction[0]});
+          this.res.json({
+            ok: true,
+            message: `Transfer successful. NGN${props.amount + RAVEN_FEE} was debited from your account`,
+            data: getTransaction
+          });
+        }else{
+          return this.errorResponse(BAD_REQUEST,result.message);
+        }
       }else{
-        this.errorResponse(GENERIC_ERROR,"Internal error");
+        return this.errorResponse(GENERIC_ERROR,"Internal error");
       }
 
     }catch(err){
-      this.errorResponse(BAD_REQUEST,err);
+      return this.errorResponse(BAD_REQUEST,err);
     }
 
   }

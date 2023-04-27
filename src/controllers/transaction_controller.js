@@ -73,12 +73,12 @@ class TransactionController extends BaseController {
 
   async credit(props){
     props.transaction_type = "credit";
-    this.performTransaction(props);
+    return this.performTransaction(props);
   }
 
   async debit(props){
     props.transaction_type = "debit";
-    this.performTransaction(props);
+    return this.performTransaction(props);
   }
 }
 
