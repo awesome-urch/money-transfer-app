@@ -27,6 +27,27 @@ class APIController extends BaseController {
       throw "API call error occurred";
     }
   }
+
+  async updateWebhookDetails() {
+    const props = this.req.body
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    try {
+      const response = await axios.post('https://integrations.getravenbank.com/v1/webhooks/update', props, config);
+      this.res.json({
+        ok: true,
+        message: 'Webhook details updated successfully',
+        data: response.data.data
+      });
+
+    } catch (error) {
+      console.error('API call error:', error);
+      this.errorResponse(GENERIC_ERROR,"");
+    }
+  }
+
+
 }
 
   
