@@ -2,7 +2,7 @@ const BaseController = require("./base_controller");
 const TransactionController = require("./transaction_controller");
 const BankAccountController = require("./bank_account_controller");
 const GeneratedBankAccount = require("../models/generated_bank_account");
-const { RAVEN_FEE } = require("./wallet_controller");
+const { RAVEN_FEE } = require("../helpers/constants");
 const dotenv = require("dotenv");
 dotenv.config();
 

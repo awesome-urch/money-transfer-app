@@ -15,7 +15,7 @@ const BaseController = require("./base_controller");
 const { parse } = require("dotenv");
 
 const INITIAL_TRANSACTION_TYPE = "initial";
-const RAVEN_FEE = 10;
+const { RAVEN_FEE }  = require("../helpers/constants");
 
 class WalletController extends BaseController {
 
@@ -85,7 +85,7 @@ class WalletController extends BaseController {
         if(result.status == 'success'){
 
           //save destination account
-          const destinationAccount = new BankAccountController().saveSourceAndDestination({
+          const destinationAccount = await new BankAccountController().saveSourceAndDestination({
             bank: data.bank,
             bank_code: data.bank_code,
             account_number: data.account_number,
@@ -125,5 +125,4 @@ class WalletController extends BaseController {
 
   
 module.exports = WalletController;
-module.exports = { RAVEN_FEE };
   
