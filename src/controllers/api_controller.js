@@ -11,6 +11,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const axios = require('axios');
 const token = process.env.RAVEN_LIVE_SECRET;
+const endpoint = 'https://integrations.getravenbank.com';
 
 class APIController extends BaseController {
   
@@ -19,7 +20,7 @@ class APIController extends BaseController {
       headers: { Authorization: `Bearer ${token}` }
     };
     try {
-      const response = await axios.post('https://integrations.getravenbank.com/v1/pwbt/generate_account', props, config);
+      const response = await axios.post(`${endpoint}/v1/pwbt/generate_account`, props, config);
       console.log(`data is ${response.data}`);
       return response.data;
     } catch (error) {
@@ -34,7 +35,7 @@ class APIController extends BaseController {
       headers: { Authorization: `Bearer ${token}` }
     };
     try {
-      const response = await axios.post('https://integrations.getravenbank.com/v1/webhooks/update', props, config);
+      const response = await axios.post(`${endpoint}/v1/webhooks/update`, props, config);
       this.res.json({
         ok: true,
         message: 'Webhook details updated successfully',
