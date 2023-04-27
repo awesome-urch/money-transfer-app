@@ -1,8 +1,10 @@
 const Wallet = require("../models/wallet");
 const User = require("../models/user");
-const APIController = require("./api_controller");
 const Transaction = require("../models/transaction");
+const BankAccount = require("../models/bank_account");
+const APIController = require("./api_controller");
 const TransactionController = require("./transaction_controller");
+const BankAccountController = require("./bank_account_controller");
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
@@ -81,13 +83,25 @@ class WalletController extends BaseController {
         const data = result.data;
         console.log(`${JSON.stringify(data)}`);
         if(result.status == 'success'){
-          const totalAmount = parseFloat(props.amount) + parseFloat(RAVEN_FEE);       
+
+          //save destination account
+          const destinationAccount = new BankAccountController().saveSourceAndDestination({
+            bank: data.bank,
+            bank_code: data.bank_code,
+            account_number: data.account_number,
+            account_name: data.account_name
+          });
+
+          const totalAmount = parseFloat(props.amount) + parseFloat(RAVEN_FEE);
+
           //debit user
           const getTransaction = await new TransactionController().debit({
               user_id: userId,
               amount: totalAmount,
               transaction_reference: data.trx_ref,
-              reason: data.narration
+              reason: data.narration,
+              status: data.status,
+              destination: destinationAccount.id
           });
           this.res.json({
             ok: true,
@@ -106,7 +120,6 @@ class WalletController extends BaseController {
     }
 
   }
-
 
 }
 

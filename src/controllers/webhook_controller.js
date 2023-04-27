@@ -1,7 +1,7 @@
 const BaseController = require("./base_controller");
 const TransactionController = require("./transaction_controller");
+const BankAccountController = require("./bank_account_controller");
 const GeneratedBankAccount = require("../models/generated_bank_account");
-const BankAccount = require("../models/bank_account");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -22,11 +22,20 @@ class WebhookController extends BaseController {
         const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
         if (getBankAccount) {
           try {
+            //save source account
+            const sourceAccount = new BankAccountController().saveSourceAndDestination({
+              bank: event.source.bank,
+              bank_code: event.source.bank_code,
+              account_number: event.source.account_number,
+              account_name: `${event.source.first_name} ${event.source.last_name}`
+            });
             await new TransactionController().credit({
               user_id: getBankAccount.user_id,
               amount: event.amount,
               transaction_reference: event.session_id,
-              reason: event.source.narration
+              reason: event.source.narration,
+              status: "success",
+              source: sourceAccount.id
             })
             return  this.res.status(200).end();
           } catch (err) {
@@ -38,7 +47,7 @@ class WebhookController extends BaseController {
         }
       }
       if (type == TRANSFER) {
-        
+
         //get user_id using account number param
         const getBankAccount = await new GeneratedBankAccount().findOne({account_number:event.account_number});
         if (getBankAccount) {

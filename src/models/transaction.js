@@ -9,7 +9,10 @@ class TransactionModel extends BaseModel {
       "balance",
       "transaction_type",
       "transaction_reference",
-      "reason"
+      "reason",
+      "status",
+      "source",
+      "destination"
     ]);
   }
 }
