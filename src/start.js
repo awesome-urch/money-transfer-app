@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth_routes").router;
 const walletRoutes = require("./routes/wallet_routes").router;
 const settingRoutes = require("./routes/setting_routes").router;
+const webhookRoutes = require("./routes/webhook_routes").router;
 // const transactionRoutes = require("./src/server/routes/transaction_routes").router;
 // const transferRoutes = require("./src/server/routes/transfer_routes").router;
 // const imageRoutes = require("./src/server/routes/image_routes").router;
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api", [
     authRoutes,
     settingRoutes,
+    webhookRoutes,
     authenticateHeader,
     walletRoutes,
     // transactionRoutes,
