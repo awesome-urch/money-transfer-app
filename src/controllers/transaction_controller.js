@@ -32,6 +32,8 @@ class TransactionController extends BaseController {
       throw "Invalid user"
     }
 
+    const wallet = await new Wallet().findOne({ user_id: props.user_id });
+
     if(!props.transaction_reference){
       props.transaction_reference = this.generateReference();
       const checkReference = await new Transaction().findOne({ transaction_reference: props.transaction_reference });
@@ -41,9 +43,9 @@ class TransactionController extends BaseController {
     }
 
     let newBalance;
-    if (transactionType === "credit") {
+    if (props.transaction_type === "credit") {
       newBalance = parseFloat(wallet.balance) + parseFloat(props.amount);
-    } else if (transactionType === "debit") {
+    } else if (props.transaction_type === "debit") {
 
       if(parseFloat(wallet.balance) < parseFloat(props.amount)){
         throw "Insufficient funds"
@@ -53,7 +55,6 @@ class TransactionController extends BaseController {
     }
 
     props.balance = newBalance;
-    props.transaction_type = transactionType;
 
     const newTransaction = await new Transaction().create(props);
     if(!newTransaction){
@@ -70,12 +71,14 @@ class TransactionController extends BaseController {
 
   }
 
-  async credit(){
-    this.performTransaction("credit");
+  async credit(props){
+    props.transaction_type = "credit";
+    this.performTransaction(props);
   }
 
-  async debit(){
-    this.performTransaction("debit");
+  async debit(props){
+    props.transaction_type = "debit";
+    this.performTransaction(props);
   }
 }
 
