@@ -2,6 +2,8 @@ const Wallet = require("../models/wallet");
 const User = require("../models/user");
 const GeneratedBankAccount = require("../models/generated_bank_account");
 const APIController = require("./api_controller");
+const WalletController = require("./wallet_controller");
+
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
@@ -40,10 +42,8 @@ class GeneratedBankAccountController extends BaseController {
         email: user.email
       }
       const result = await new APIController().generateBankAccount(postData);
-      console.log(`data is ${result["status"]}`);
       if(result.data){
         const data = result.data;
-        console.log(`data is ${data.bank} user is ${userId}`);
         const props = {
           user_id: userId,
           bank: data.bank,
@@ -58,6 +58,9 @@ class GeneratedBankAccountController extends BaseController {
             account_name: data.account_name
           }
         )
+
+        //create user wallet account
+        await this.createWalletAccount();
 
         const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
         this.res.json({
@@ -75,13 +78,8 @@ class GeneratedBankAccountController extends BaseController {
     }
   }
 
-  async userHasbankAccount(){
-    const userId = this.req.user
-    const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
-    if(bankAccount){
-      return true;
-    }
-    return false;
+  async createWalletAccount(){
+    await WalletController().createWalletAccount();
   }
 
 
