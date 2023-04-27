@@ -49,18 +49,15 @@ class WebhookController extends BaseController {
         }
       }
       if (type == TRANSFER) {
-
-        const transaction = new TransactionController().getTransaction({
+        const transaction = await new TransactionController().getTransaction({
           transaction_reference: event.trx_ref
         });
         if(!transaction){
           return this.res.status(400).send(`Invalid transaction reference`);
         }
-
         if(transaction.status == "success"){
           return this.res.status(200).end();
         }
-
         if(event.status = "successful"){
           await new TransactionController().updateTransaction(transaction.id,{
             status: "success"
@@ -72,7 +69,8 @@ class WebhookController extends BaseController {
             status: "failed"
           });
           //reverse the amount to user's account
-          const totalReversalAmount = parseFloat(event.amount) + parseFloat(RAVEN_FEE);
+          const totalReversalAmount = parseFloat(event.meta.amount) + parseFloat(RAVEN_FEE);
+          console.log(`4: ${event.meta.amount} total: ${totalReversalAmount}`);
           const transactionReference = new TransactionController().generateReference();
           await new TransactionController().credit({
             user_id: transaction.user_id,
@@ -82,7 +80,7 @@ class WebhookController extends BaseController {
           })
           return  this.res.status(200).end();
         }
-        
+
       }
     } catch (err) {
       console.error(err);

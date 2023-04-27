@@ -52,7 +52,6 @@ class TransactionController extends BaseController {
 
       newBalance = parseFloat(wallet.balance) - parseFloat(props.amount);
     }
-    console.log(`newbal ${JSON.stringify(props)} `);
 
     props.balance = newBalance;
 
@@ -82,9 +81,11 @@ class TransactionController extends BaseController {
   }
 
   async getTransaction(props){
+    console.log(`1: ${JSON.stringify(props)}`)
     const transaction = await new Transaction().findOne({
       transaction_reference: props.transaction_reference,
     });
+    console.log(`2: ${JSON.stringify(transaction)}`)
     return transaction;
   }
 
