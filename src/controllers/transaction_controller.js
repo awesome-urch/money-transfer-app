@@ -39,8 +39,6 @@ class TransactionController extends BaseController {
         props.transaction_reference = this.generateReference();
       }
     }
-
-    console.log(`amt ${props.amount} wbal ${wallet.balance}`)
     let newBalance;
     if (props.transaction_type === "credit") {
       newBalance = parseFloat(wallet.balance) + parseFloat(props.amount);
@@ -54,20 +52,13 @@ class TransactionController extends BaseController {
     }
 
     props.balance = newBalance;
-
     const newTransaction = await new Transaction().create(props);
     if(!newTransaction){
       throw "Internal error"
     }
     const getTransaction = await new Transaction().findOne({id:newTransaction[0]});
-
-    console.log(newTransaction);
-    console.log(new Transaction().selectableProps);
-
     await new Wallet().update(wallet.id,{ balance: newBalance, transaction_type: props.transaction_type});
-
     return getTransaction
-
   }
 
   async credit(props){
@@ -91,6 +82,15 @@ class TransactionController extends BaseController {
 
   async updateTransaction(id, props){
     await new Transaction().update(id,{status:props.status});
+  }
+
+  async getTransactions(){
+    const transactions = await new Transaction().find({user_id: this.req.user});
+    console.log(`${transactions}`);
+    this.res.json({
+      ok: true,
+      data: transactions
+    });
   }
 
 

@@ -20,15 +20,17 @@ class BaseModel {
     .timeout(this.timeout);
   }
 
-  find(filters) {
+  find(filters, limit = 10, offset = 0) {
     return this.knexInstance.select(this.selectableProps)
     .from(this.tableName)
     .where(filters)
+    .offset(offset)
+    .limit(limit)
     .timeout(this.timeout);
   }
 
   findOne(filters) {
-    return this.find(filters)
+    return this.find(filters,0)
     .then(results => {
       if (!Array.isArray(results)) return results;
       return results[0];
