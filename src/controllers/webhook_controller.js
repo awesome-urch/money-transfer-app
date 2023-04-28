@@ -56,15 +56,17 @@ class WebhookController extends BaseController {
           return this.res.status(400).send(`Invalid transaction reference`);
         }
         if(transaction.status == "success"){
+          console.log("suc");
           return this.res.status(200).end();
-        }
-        if(event.status = "successful"){
+        }//successful
+        if(event.status == "successful"){
+          console.log("successful");
           await new TransactionController().updateTransaction(transaction.id,{
             status: "success"
           });
-        }
-
-        if(event.status = "failed"){
+          return  this.res.status(200).end();
+        }else if(event.status == "failed"){
+          console.log("failed");
           await new TransactionController().updateTransaction(transaction.id,{
             status: "failed"
           });
@@ -80,8 +82,9 @@ class WebhookController extends BaseController {
             reason: `Reversal for transaction ref: ${event.trx_ref}`
           })
           return  this.res.status(200).end();
+        }else{
+          return this.res.status(400).send(`Invalid transaction status`);
         }
-
       }
     } catch (err) {
       console.error(err);
