@@ -17,11 +17,7 @@ class AuthController extends BaseController {
 
   authenticationSuccessful(message, user) {
     console.log(message);
-    this.res.json({
-      ok: true,
-      message: message,
-      data: { user: user, token: this.accessToken }
-    });
+    return this.successResponse(message,{ user: user, token: this.accessToken });
   }
 
   async generateToken(userId) {

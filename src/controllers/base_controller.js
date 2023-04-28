@@ -5,6 +5,14 @@ class BaseController {
     this.next = next;
   }
 
+  successResponse(message, data){
+    this.res.json({
+      ok: true,
+      message: message,
+      data: data
+    });
+  }
+
   errorResponse(code, error){
     this.res.status(code).send({
       ok: false,

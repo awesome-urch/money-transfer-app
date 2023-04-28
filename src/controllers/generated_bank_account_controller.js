@@ -26,11 +26,7 @@ class GeneratedBankAccountController extends BaseController {
     const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
     
     if(bankAccount){
-      this.res.json({
-        ok: true,
-        message: 'Bank account generated successfully',
-        data: bankAccount
-      });
+      return this.successResponse('Bank account generated successfully',bankAccount);
     }
 
     try{
@@ -58,17 +54,10 @@ class GeneratedBankAccountController extends BaseController {
             account_name: data.account_name
           }
         );
-
         //create user wallet account
         await this.createWalletAccount();
-
         const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
-        this.res.json({
-          ok: true,
-          message: 'Bank account generated successfully',
-          data: bankAccount
-        });
-
+        return this.successResponse('Bank account generated successfully',bankAccount);
       }else{
         this.errorResponse(GENERIC_ERROR,"");
       }

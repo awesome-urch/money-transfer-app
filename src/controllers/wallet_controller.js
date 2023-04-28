@@ -38,9 +38,6 @@ class WalletController extends BaseController {
 
     props.user_id = userId
 
-    // const newWallet = await new Wallet().create(props);
-    // const getWallet = await new Wallet().findOne({id:newWallet[0]});
-
     const getWallet = await this.initUserWallet(props);
 
     return getWallet;
@@ -103,11 +100,7 @@ class WalletController extends BaseController {
               status: data.status,
               destination: destinationAccount.id
           });
-          this.res.json({
-            ok: true,
-            message: `Transfer successful. NGN${totalAmount} was debited from your account`,
-            data: getTransaction
-          });
+          return this.successResponse(`Transfer successful. NGN${totalAmount} was debited from your account`,getTransaction);
         }else{
           return this.errorResponse(BAD_REQUEST,result.message);
         }

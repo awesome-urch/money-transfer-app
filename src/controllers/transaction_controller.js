@@ -98,10 +98,7 @@ class TransactionController extends BaseController {
     }
     console.log(JSON.stringify(params));
     const transactions = await new Transaction().findWithOptions(params,limit,offset).orderBy('id', 'desc');;
-    this.res.json({
-      ok: true,
-      data: transactions
-    });
+    return this.successResponse("",transactions);
   }
 
   async getTransfers(){
