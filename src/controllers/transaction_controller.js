@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Transaction = require("../models/transaction");
 const WalletController = require("./wallet_controller");
 const BaseController = require("./base_controller");
+const { knexDb } = require("../config/database");
 
 class TransactionController extends BaseController {
 
@@ -72,11 +73,9 @@ class TransactionController extends BaseController {
   }
 
   async getTransaction(props){
-    console.log(`1: ${JSON.stringify(props)}`)
     const transaction = await new Transaction().findOne({
       transaction_reference: props.transaction_reference,
     });
-    console.log(`2: ${JSON.stringify(transaction)}`)
     return transaction;
   }
 
@@ -97,7 +96,29 @@ class TransactionController extends BaseController {
       params.transaction_type = transactionType;
     }
     console.log(JSON.stringify(params));
-    const transactions = await new Transaction().findWithOptions(params,limit,offset).orderBy('id', 'desc');;
+
+    let transactions;
+    if(transactionType == 'debit'){
+      transactions = await knexDb('transactions')
+      .from('transactions')
+      .select('transactions.*', knexDb.raw('JSON_OBJECT("bank", bank_accounts.bank, "bank_code", bank_accounts.bank_code, "account_number", bank_accounts.account_number, "account_name", bank_accounts.account_name) as source'))
+      .leftJoin('bank_accounts', 'transactions.source', '=', 'bank_accounts.id')
+      .where(params)
+      .orderBy('transactions.id', 'desc')
+      .offset(offset)
+      .limit(limit);
+    }
+    if(transactionType == 'credit'){
+      transactions = await knexDb('transactions')
+      .from('transactions')
+      .select('transactions.*', knexDb.raw('JSON_OBJECT("bank", bank_accounts.bank, "bank_code", bank_accounts.bank_code, "account_number", bank_accounts.account_number, "account_name", bank_accounts.account_name) as source'))
+      .leftJoin('bank_accounts', 'transactions.source', '=', 'bank_accounts.id')
+      .where(params)
+      .orderBy('transactions.id', 'desc')
+      .offset(offset)
+      .limit(limit);
+    }
+
     return this.successResponse("",transactions);
   }
 
