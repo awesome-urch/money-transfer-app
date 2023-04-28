@@ -85,7 +85,14 @@ class TransactionController extends BaseController {
   }
 
   async getTransactions(){
-    const transactions = await new Transaction().find({user_id: this.req.user});
+    const limit = 10;
+    const props = this.req.body;
+    let page = Number(props.page) || 1;
+    if (page < 1 || !Number.isInteger(page)) {
+      page = 1;
+    }
+    const offset = limit * (page - 1);
+    const transactions = await new Transaction().findWithOptions({user_id: this.req.user},limit,offset);
     console.log(`${transactions}`);
     this.res.json({
       ok: true,
