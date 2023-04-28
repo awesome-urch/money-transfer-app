@@ -52,7 +52,7 @@ describe("TransferController", () => {
     } catch (error) {
       expect(error).to.equal("amount is invalid");
     }
-  });
+  }); 
 
   it("should throw an error if amount is invalid", async function() {
     try {
