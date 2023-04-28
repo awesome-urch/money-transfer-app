@@ -116,4 +116,3 @@ class TransactionController extends BaseController {
 
   
 module.exports = TransactionController;
-  
