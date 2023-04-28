@@ -86,7 +86,7 @@ class TransactionController extends BaseController {
 
   async getTransactions(transactionType){
     const limit = 10;
-    const props = this.req.body;
+    const props = this.req.query;
     let page = Number(props.page) || 1;
     if (page < 1 || !Number.isInteger(page)) {
       page = 1;
