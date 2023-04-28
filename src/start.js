@@ -4,15 +4,12 @@ dotenv.config();
 const express = require("express");
 const bodyParser = require("body-parser");
 
-//const { router: authRoutes } = require("./routes/auth_routes");
-
 const authRoutes = require("./routes/auth_routes").router;
 const walletRoutes = require("./routes/wallet_routes").router;
 const settingRoutes = require("./routes/setting_routes").router;
 const webhookRoutes = require("./routes/webhook_routes").router;
 const transactionRoutes = require("./routes/transaction_routes").router;
-// const transferRoutes = require("./src/server/routes/transfer_routes").router;
-// const imageRoutes = require("./src/server/routes/image_routes").router;
+const userRoutes = require("./routes/user_routes").router;
 
 const { all, authenticateHeader } = require("./middleware/error_middleware");
 
@@ -28,15 +25,12 @@ app.use("/api", [
     settingRoutes,
     webhookRoutes,
     authenticateHeader,
+    userRoutes,
     walletRoutes,
-    transactionRoutes,
-    // transferRoutes,
-    // imageRoutes
+    transactionRoutes
 ]);
 
-
-
-// app.use(all);
+app.use(all);
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${ PORT }`);
