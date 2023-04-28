@@ -84,7 +84,7 @@ class TransactionController extends BaseController {
     await new Transaction().update(id,{status:props.status});
   }
 
-  async getTransactions(){
+  async getTransactions(transactionType){
     const limit = 10;
     const props = this.req.body;
     let page = Number(props.page) || 1;
@@ -92,14 +92,25 @@ class TransactionController extends BaseController {
       page = 1;
     }
     const offset = limit * (page - 1);
-    const transactions = await new Transaction().findWithOptions({user_id: this.req.user},limit,offset);
-    console.log(`${transactions}`);
+    let params = {user_id: this.req.user};
+    if(transactionType){
+      params.transaction_type = transactionType;
+    }
+    console.log(JSON.stringify(params));
+    const transactions = await new Transaction().findWithOptions(params,limit,offset).orderBy('id', 'desc');;
     this.res.json({
       ok: true,
       data: transactions
     });
   }
 
+  async getTransfers(){
+    await this.getTransactions("debit");
+  }
+
+  async getDeposits(){
+    await this.getTransactions("credit");
+  }
 
 }
 
