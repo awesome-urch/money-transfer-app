@@ -27,7 +27,7 @@ class TransactionController extends BaseController {
 
     let wallet = await new Wallet().findOne({ user_id: props.user_id });
     if(!wallet){
-      wallet = new WalletController().initUserWallet({
+      wallet = await new WalletController().initUserWallet({
         user_id: props.user_id
       });
     }

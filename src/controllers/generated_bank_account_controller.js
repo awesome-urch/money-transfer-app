@@ -55,9 +55,13 @@ class GeneratedBankAccountController extends BaseController {
           }
         );
         //create user wallet account
-        await this.createWalletAccount();
+        await new WalletController().initUserWallet({
+          user_id: userId
+        });
         const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
-        return this.successResponse('Bank account generated successfully',bankAccount);
+        console.log("generated bank account");
+        console.log(`${JSON.stringify(bankAccount)}`);
+        this.successResponse('Bank account generated successfully',bankAccount);
       }else{
         this.errorResponse(GENERIC_ERROR,"");
       }
@@ -65,10 +69,6 @@ class GeneratedBankAccountController extends BaseController {
     }catch(err){
       this.errorResponse(BAD_REQUEST,err);
     }
-  }
-
-  async createWalletAccount(){
-    await WalletController().createWalletAccount();
   }
 
 
