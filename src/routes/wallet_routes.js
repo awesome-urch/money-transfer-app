@@ -4,12 +4,12 @@ const GeneratedBankAccountController = require("../controllers/generated_bank_ac
 
 const router = express.Router();
 
-router.post("/generate_bank_account", (req, res, next) => {
+router.post("/bank_account", (req, res, next) => {
   const controller = new GeneratedBankAccountController(req, res, next);
   controller.createBankAccount();
 });
 
-router.post("/bank_transfer", (req, res, next) => {
+router.get("/bank_transfer", (req, res, next) => {
   const controller = new WalletController(req, res, next);
   controller.bankTransfer();
 });
