@@ -126,7 +126,10 @@ class TransactionController extends BaseController {
       )
       .leftJoin('bank_accounts', 'transactions.source', '=', 'bank_accounts.id')
       .leftJoin('bank_accounts as dest_accounts', 'transactions.destination', '=', 'dest_accounts.id')
-      .where(params);
+      .where(params)
+      .orderBy('transactions.id', 'desc')
+      .offset(offset)
+      .limit(limit);
     }
 
     return this.successResponse("",transactions);
