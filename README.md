@@ -9,6 +9,9 @@ This service is powered by [Raven atlas API](https://raven-atlas.readme.io/refer
 
 This web service was built using NodeJS, Express, Knex and MySQL.
 
+## Endpoints documentation
+Click [here](https://documenter.getpostman.com/view/8761686/2s93eSZFPL) to access the link to the Postman collection documentation of all the endpoints
+
 ## Running this service
 - Clone the repository
 ```
@@ -21,7 +24,7 @@ npm install
 ```
 
 - Configure your MySQL server and edit the .env file <br>
-Here is the [E-R Diagram](https://dbdesigner.page.link/XzhsNWVH27tgs2BU9)
+Here is the [E-R Diagram](https://dbdesigner.page.link/6V7oxKmQPq2o2ZB18)
 
 - Build and run the project
 ```
