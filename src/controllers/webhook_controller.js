@@ -30,7 +30,6 @@ class WebhookController extends BaseController {
               account_number: event.source.account_number,
               account_name: `${event.source.first_name} ${event.source.last_name}`
             });
-            console.log(`${sourceAccount}`);
             await new TransactionController().credit({
               user_id: getBankAccount.user_id,
               amount: event.amount,
@@ -56,23 +55,19 @@ class WebhookController extends BaseController {
           return this.res.status(400).send(`Invalid transaction reference`);
         }
         if(transaction.status == "success"){
-          console.log("suc");
           return this.res.status(200).end();
         }//successful
         if(event.status == "successful"){
-          console.log("successful");
           await new TransactionController().updateTransaction(transaction.id,{
             status: "success"
           });
           return  this.res.status(200).end();
         }else if(event.status == "failed"){
-          console.log("failed");
           await new TransactionController().updateTransaction(transaction.id,{
             status: "failed"
           });
           //reverse the amount to user's account
           const totalReversalAmount = parseFloat(event.meta.amount) + parseFloat(TRANSACTION_FEE);
-          console.log(`4: ${event.meta.amount} total: ${totalReversalAmount}`);
           const transactionReference = new TransactionController().generateReference();
           await new TransactionController().credit({
             user_id: transaction.user_id,

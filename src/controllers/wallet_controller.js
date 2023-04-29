@@ -24,8 +24,6 @@ class WalletController extends BaseController {
     const userId = this.req.user
     props.transaction_type = INITIAL_TRANSACTION_TYPE;
 
-    console.log(this.req.user);
-
     if (!userId ){
       return this.errorResponse(BAD_REQUEST,"`userId` is required");
     }
@@ -78,7 +76,6 @@ class WalletController extends BaseController {
       const result = await new APIController().bankTransfer(props);
       if(result.data){
         const data = result.data;
-        console.log(`${JSON.stringify(data)}`);
         if(result.status == 'success'){
 
           //save destination account

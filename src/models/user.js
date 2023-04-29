@@ -18,7 +18,6 @@ class UserModel extends BaseModel {
   }
 
   beforeSave(data) {
-    console.log(data);
     if (!data.password) return Promise.resolve(data);
     return hashPassword(data.password)
       .then((hash) => ({ ...data, password: hash }))

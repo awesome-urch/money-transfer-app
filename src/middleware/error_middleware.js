@@ -99,7 +99,6 @@ const authenticateHeader = async (req, res, next) => {
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(`decoded id = ${decoded.user_id}`);
       const user = await new AccessTokenModel().findOne({ access_token: token });
       if (!user) {
         return res.status(UNAUTHORIZED).send({
@@ -110,7 +109,6 @@ const authenticateHeader = async (req, res, next) => {
       req.user = decoded.user_id;
       next();
     } catch (err) {
-        console.log(`error = ${err}`);
         return res.status(UNAUTHORIZED).send({
             ok: false,
             message: 'Unauthorized. Invalid token',

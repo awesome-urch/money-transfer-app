@@ -59,8 +59,6 @@ class GeneratedBankAccountController extends BaseController {
           user_id: userId
         });
         const bankAccount = await new GeneratedBankAccount().findOne({ user_id: userId });
-        console.log("generated bank account");
-        console.log(`${JSON.stringify(bankAccount)}`);
         this.successResponse('Bank account generated successfully',bankAccount);
       }else{
         this.errorResponse(GENERIC_ERROR,"");

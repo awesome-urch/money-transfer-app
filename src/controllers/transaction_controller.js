@@ -95,7 +95,6 @@ class TransactionController extends BaseController {
     if(transactionType){
       params.transaction_type = transactionType;
     }
-    console.log(JSON.stringify(params));
 
     let transactions;
     if(transactionType == 'debit'){

@@ -16,7 +16,6 @@ class AuthController extends BaseController {
   }
 
   authenticationSuccessful(message, user) {
-    console.log(message);
     return this.successResponse(message,{ user: user, token: this.accessToken });
   }
 
@@ -55,7 +54,6 @@ class AuthController extends BaseController {
         this.errorResponse(UNAUTHORIZED, "");
       }
     } catch (err) {
-      console.log("pt1");
       return this.errorResponse(UNAUTHORIZED, err);
     }
   }
@@ -80,7 +78,6 @@ class AuthController extends BaseController {
 
     const user = await new User().findOne({ email: props.email });
 
-    console.log(`${JSON.stringify(user)}`);
     if (user) {
       return this.errorResponse(
         CONFLICT,
@@ -90,7 +87,6 @@ class AuthController extends BaseController {
 
     const user1 = await new User().findOne({ username: props.username });
 
-    console.log(`${JSON.stringify(user)}`);
     if (user1) {
       return this.errorResponse(
         CONFLICT,
@@ -108,15 +104,8 @@ class AuthController extends BaseController {
     });
 
     const getUser = await new User().findOne({id:newUser[0]});
-
-    console.log(newUser);
-    console.log(getUser);
-
     const getAccessToken = await this.generateToken(getUser.id);
     this.accessToken = getAccessToken.access_token;
-
-    console.log("gene1 "+ getAccessToken + " as :: " + this.accessToken);
-
     this.authenticationSuccessful("Registration successful",getUser);
   }
 }
