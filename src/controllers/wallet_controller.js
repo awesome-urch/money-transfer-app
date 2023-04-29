@@ -15,7 +15,7 @@ const BaseController = require("./base_controller");
 const { parse } = require("dotenv");
 
 const INITIAL_TRANSACTION_TYPE = "initial";
-const { RAVEN_FEE }  = require("../helpers/constants");
+const { TRANSACTION_FEE }  = require("../helpers/constants");
 
 class WalletController extends BaseController {
 
@@ -89,7 +89,7 @@ class WalletController extends BaseController {
             account_name: data.account_name
           });
 
-          const totalAmount = parseFloat(props.amount) + parseFloat(RAVEN_FEE);
+          const totalAmount = parseFloat(props.amount) + parseFloat(TRANSACTION_FEE);
 
           //debit user
           const getTransaction = await new TransactionController().debit({

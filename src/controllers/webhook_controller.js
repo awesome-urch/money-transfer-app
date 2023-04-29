@@ -2,7 +2,7 @@ const BaseController = require("./base_controller");
 const TransactionController = require("./transaction_controller");
 const BankAccountController = require("./bank_account_controller");
 const GeneratedBankAccount = require("../models/generated_bank_account");
-const { RAVEN_FEE } = require("../helpers/constants");
+const { TRANSACTION_FEE } = require("../helpers/constants");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -71,7 +71,7 @@ class WebhookController extends BaseController {
             status: "failed"
           });
           //reverse the amount to user's account
-          const totalReversalAmount = parseFloat(event.meta.amount) + parseFloat(RAVEN_FEE);
+          const totalReversalAmount = parseFloat(event.meta.amount) + parseFloat(TRANSACTION_FEE);
           console.log(`4: ${event.meta.amount} total: ${totalReversalAmount}`);
           const transactionReference = new TransactionController().generateReference();
           await new TransactionController().credit({

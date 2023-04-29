@@ -1,5 +1,5 @@
-const RAVEN_FEE = 10;
+const TRANSACTION_FEE = 0;
 
 module.exports = {
-  RAVEN_FEE
+  TRANSACTION_FEE
 };

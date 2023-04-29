@@ -101,14 +101,13 @@ class TransactionController extends BaseController {
     if(transactionType == 'debit'){
       transactions = await knexDb('transactions')
       .from('transactions')
-      .select('transactions.*', knexDb.raw('JSON_OBJECT("bank", bank_accounts.bank, "bank_code", bank_accounts.bank_code, "account_number", bank_accounts.account_number, "account_name", bank_accounts.account_name) as source'))
-      .leftJoin('bank_accounts', 'transactions.source', '=', 'bank_accounts.id')
+      .select('transactions.*', knexDb.raw('JSON_OBJECT("bank", bank_accounts.bank, "bank_code", bank_accounts.bank_code, "account_number", bank_accounts.account_number, "account_name", bank_accounts.account_name) as destination'))
+      .leftJoin('bank_accounts', 'transactions.destination', '=', 'bank_accounts.id')
       .where(params)
       .orderBy('transactions.id', 'desc')
       .offset(offset)
       .limit(limit);
-    }
-    if(transactionType == 'credit'){
+    }else if(transactionType == 'credit'){
       transactions = await knexDb('transactions')
       .from('transactions')
       .select('transactions.*', knexDb.raw('JSON_OBJECT("bank", bank_accounts.bank, "bank_code", bank_accounts.bank_code, "account_number", bank_accounts.account_number, "account_name", bank_accounts.account_name) as source'))
@@ -117,6 +116,17 @@ class TransactionController extends BaseController {
       .orderBy('transactions.id', 'desc')
       .offset(offset)
       .limit(limit);
+    }else{
+      transactions = await knexDb('transactions')
+      .from('transactions')
+      .select(
+        'transactions.*',
+        knexDb.raw('JSON_OBJECT("bank", bank_accounts.bank, "bank_code", bank_accounts.bank_code, "account_number", bank_accounts.account_number, "account_name", bank_accounts.account_name) as source'),
+        knexDb.raw('JSON_OBJECT("bank", dest_accounts.bank, "bank_code", dest_accounts.bank_code, "account_number", dest_accounts.account_number, "account_name", dest_accounts.account_name) as destination')
+      )
+      .leftJoin('bank_accounts', 'transactions.source', '=', 'bank_accounts.id')
+      .leftJoin('bank_accounts as dest_accounts', 'transactions.destination', '=', 'dest_accounts.id')
+      .where(params);
     }
 
     return this.successResponse("",transactions);
