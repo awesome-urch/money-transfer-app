@@ -88,6 +88,16 @@ class AuthController extends BaseController {
       );
     }
 
+    const user1 = await new User().findOne({ username: props.username });
+
+    console.log(`${JSON.stringify(user)}`);
+    if (user1) {
+      return this.errorResponse(
+        CONFLICT,
+        "Username already exists"
+      );
+    }
+
     const newUser = await new User().create({
       email: props.email,
       first_name: props.first_name,
